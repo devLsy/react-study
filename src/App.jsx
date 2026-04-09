@@ -33,19 +33,25 @@ function App() {
     setMoney(''); 
   }
 
+  const deleteLog = (index) => {
+    setLogs(logs.filter((_, i) => i !== index));
+  }
+  
   return (
     <div className='card'>
       <h1>name: {name}</h1>
       <input type="text" value={name} onChange={changeName}/>
       <h1>count: {count}</h1>
-      <button onClick={plus}>플러스dd</button>
-      <button onClick={miuus}>마이너스</button><br/>
-      <input type="number" value={money} onChange={changeMoney}/>
-      <h1>money: {money}</h1>
+      <button onClick={plus}>플러스</button>
+      <button onClick={miuus}>마이너스</button><br/>  
+      input money: <input type="number" value={money} onChange={changeMoney}/> &nbsp;
       <button onClick={changeLog}>로그기록</button>
-      <ul>  
-        {logs.map((item, index) => (
-          <li key={index}>{item}원 기록되었다.</li>
+      <h1>money: {money}</h1>
+      <ul>    
+        {logs.map((item, index) => (  
+          <li key={index}>{item}원 기록되었다.  
+            <button onClick={() => deleteLog(index)}>로그삭제</button>
+          </li> 
         ))}
       </ul>
     </div>
