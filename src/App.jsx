@@ -3,82 +3,47 @@ import './App.css'
 
 function App() {
 
-  const [count, setCount] = useState(0);
-  const [name, setName] = useState('');
   const [money, setMoney] = useState('');
   const [logs, setLogs] = useState([]);
 
-  const plus = () => {
-    setCount(count+1)
-  }
-
-  const miuus = () => {
-    if(count < 1) {
-      alert('1미만까지는 마이너스 못한다.');
-      return;
-    }
-    setCount(count-1)
-  }
-
-  const reset = () => { 
-    if(count < 1) {
-      alert('카운트가 0이므로 초기화 할 필요가 없어.');
-      return;
-    } 
-    setCount(0)
-  }
-
-  const changeMoney = (e) => {
+  // 머니 체인지
+  const moneyChange = (e) => {
     setMoney(e.target.value);
   }
-
-  const changeName = (e) => {
-    setName(e.target.value);
+  // 로그 추가
+  const addLog = () => {  
+    if(money < 1 || money === '') return;
+    setLogs([money, ...logs]);
+    setMoney('');     
   }
-
-  const changeLog = () => {
-    if(!money) return;
-    setLogs([...logs, money]);
-    setMoney(''); 
-  }
-
-  const deleteLog = (index) => {
+  // 로그 삭제
+  const delLog = (index) => {
     setLogs(logs.filter((_, i) => i !== index));
   }
-
-  const updateLog = (index) => {
-    const newLogs = logs.map((item, i) => {
-      if(i === index) {
-        return money;
-      } else {
-        return item;
-      }
-    });
-
-    setLogs(newLogs);
-    setMoney(''); 
+  // 로그 수정
+    const updateLog = (index) => {
+      const newLogs = logs.map((item, i) => i === index ? money : item);
+      setLogs(newLogs);
   }
+  
+  return (  
+    <div className='card'>  
+        돈 추가 : <input type="number" onChange={moneyChange} value={money}/>
+        <h1>돈: {money}</h1>
+        <button onClick={addLog}>로그 추가</button>
+        <h1>로그 길이: {logs.length}</h1>
 
-  return (
-    <div className='card'>
-      <h1>name: {name}</h1>
-      <input type="text" value={name} onChange={changeName}/>
-      <h1>count: {count}</h1>
-      <button onClick={plus}>플러스</button> &nbsp;
-      <button onClick={miuus}>마이너스</button> &nbsp;
-      <button onClick={reset}>초기화</button><br/> 
-      input money: <input type="number" value={money} onChange={changeMoney}/> &nbsp;
-      <button onClick={changeLog}>로그기록</button>
-      <h1>money: {money}</h1>
-      <ul>    
-        {logs.map((item, index) => (  
-          <li key={index}>{item}원 기록되었다.  
-            <button onClick={() => deleteLog(index)}>로그삭제</button>
-            <button onClick={() => updateLog(index)}>로그수정</button>
-          </li> 
-        ))}
-      </ul>
+        <ul>
+          {logs.map((item, index) => (
+              <li key={index}>
+                  {index}번 째 로그: {item} &nbsp;
+                  <button onClick={() => delLog(index)}>로그 삭제</button> &nbsp; 
+                  <button onClick={() => updateLog(index)}>로그 수정</button> &nbsp; 
+              </li>
+          ))}
+        </ul>
+
     </div>
-  )
-}
-export default App
+  ) 
+} 
+export default App;
