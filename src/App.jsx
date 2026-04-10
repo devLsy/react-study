@@ -4,26 +4,35 @@ import './App.css'
 function App() {
 
   const [money, setMoney] = useState('');
-  const [logs, setLogs] = useState([]);
 
-  // 머니 체인지
+  const [logs, setLogs] = useState(() => {
+    const saved = localStorage.getItem('moneyLogs');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  // 머니 체인지  
   const moneyChange = (e) => {
     setMoney(e.target.value);
-  }
+  } 
   // 로그 추가
   const addLog = () => {  
     if(money < 1 || money === '') return;
-    setLogs([money, ...logs]);
+    const newLogs = [money, ...logs];
+    setLogs(newLogs);
+    localStorage.setItem('moneyLogs', JSON.stringify(newLogs));
     setMoney('');     
   }
   // 로그 삭제
   const delLog = (index) => {
-    setLogs(logs.filter((_, i) => i !== index));
+    const newLogs = logs.filter((_, i) => i !== index);
+    setLogs(newLogs); 
+    localStorage.setItem('moneyLogs', JSON.stringify(newLogs));
   }
   // 로그 수정
     const updateLog = (index) => {
       const newLogs = logs.map((item, i) => i === index ? money : item);
       setLogs(newLogs);
+      localStorage.setItem('moneyLogs', JSON.stringify(newLogs));
   }
   
   return (  
