@@ -1,11 +1,15 @@
 const LogList = ({ logs, delLog, updateLog}) => (
-    <ul>
+    <ul className="log-list">
       {logs.map((item) => (
-        <li key={item.id}>  
-          시간: {new Date(item.id).toLocaleTimeString()}  
-          금액: {item.val} &nbsp;       
-          <button onClick={() => delLog(item.id)}>로그 삭제</button> &nbsp; 
-          <button onClick={() => updateLog(item.id)}>로그 수정</button>
+        <li key={item.id} className="log-item">  
+          <span className="category-badge">[{item.category ? item.category: '미분류'}]</span> &nbsp;
+          <span className="time">{new Date(item.id).toLocaleTimeString()}</span> &nbsp;
+          <span className="money">{Number(item.val).toLocaleString()}원</span> &nbsp;
+          
+          <div className="btn-group">
+            <button onClick={() => updateLog(item.id)}>수정</button>
+            <button onClick={() => delLog(item.id)}>삭제</button>
+          </div>
         </li> 
       ))}
     </ul>

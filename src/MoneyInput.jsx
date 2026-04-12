@@ -1,8 +1,23 @@
-const MoneyInput = ({ inputRef, moneyChange, onKeyDown, money, addLog }) => 
-  <div> 
-    돈 추가 : <input ref={inputRef} type="number" onChange={moneyChange} onKeyDown={onKeyDown} value={money}/>
-    <h1 >돈: {money}</h1>
-    <button onClick={addLog}>로그 추가</button>
+const MoneyInput = ({ inputRef, moneyChange, onKeyDown, money, addLog, category, categoryChange }) => (
+  <div className="input-group"> 
+    <select className="category-select" value={category} onChange={categoryChange}>
+      <option value="식비">식비 🍕</option>
+      <option value="교통비">교통비 🚌</option>
+      <option value="고정지출">고정지출 🏠</option>
+      <option value="기타">기타 🏷️</option>
+    </select>
+    
+    <input 
+      className="money-input"
+      ref={inputRef} 
+      type="number" 
+      onChange={moneyChange} 
+      onKeyDown={onKeyDown} 
+      value={money}
+      placeholder="금액 입력"
+    />
+    
+    <button className="add-btn" onClick={addLog}>로그 추가</button>
   </div>
-
+)
 export default MoneyInput;

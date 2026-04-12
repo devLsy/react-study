@@ -1,14 +1,26 @@
 import { useEffect, useState, useRef } from 'react';
 import MoneyInput from './MoneyInput';
 import LogList from './LogList';
+import './App.css'; 
 
 function App() {
 
   const [money, setMoney] = useState('');
   const [logs, setLogs] = useState([]);
+  const [filter, setFilter] = useState('전체'); 
+  const [category, setCategory] = useState('식비');
+  const inputRef = useRef(null);  
 
-  const inputRef = useRef(null);
-  const total = logs.reduce(( sum, item ) => sum + Number(item.val), 0);
+  // const displayLogs = filter === '전체' ? logs : logs.filter(item => item.category === filter);
+  const displayLogs = (filter === '전체' ? logs : logs.filter(item => item.category === filter))
+    .sort((a,b) => Number(b.val) - Number(a.val));
+  
+  const filteredTotal = displayLogs.reduce(( sum, item ) => sum + Number(item.val), 0);
+  const summary = logs.reduce((acc, item) => {
+    const cat = item.category || '미분류';
+    acc[cat] = (acc[cat] || 0) + Number(item.val);    
+    return acc;
+  }, {});
 
   useEffect(() => {
     const saved = localStorage.getItem('moneyLogs');
@@ -18,23 +30,25 @@ function App() {
     }    
   }, []); 
 
-  useEffect(() => {
-    if(logs.length > 0) {
-      localStorage.setItem('moneyLogs', JSON.stringify(logs));
-      console.log('데이터 동기화 완료!');
-    } 
+  useEffect(() => { 
+    localStorage.setItem('moneyLogs', JSON.stringify(logs));
+    console.log('데이터 동기화 완료!');
   }, [logs]);
 
   // 머니 체인지  
-  const moneyChange = (e) => setMoney(e.target.value);
+  const moneyChange = (e) => setMoney(e.target.value);  
+
+  // 카테고리 체인지
+  const categoryChange = (e) => setCategory(e.target.value);
 
   // 로그 추가
   const addLog = () => {  
-    if(money < 1 || money === '') return;
+    if (money === '' || Number(money) < 1) return;
 
     const logObj = {
       id: Date.now(),
-      val: money
+      val: Number(money),
+      category: category  
     }
 
     const newLogs = [logObj, ...logs];
@@ -55,34 +69,74 @@ function App() {
   }
 
   // 로그 삭제  
-  const delLog = (id) => {
-    const newLogs = logs.filter(item => item.id !== id);
-    setLogs(newLogs); 
-  }
+  const delLog = (id) => setLogs(logs.filter(item => item.id !== id)); 
+
   // 로그 수정
-    const updateLog = (id) => { 
-      const newLogs = logs.map((item) => item.id === id ? { ...item, val: money } : item);
-      setLogs(newLogs);
+    const updateLog = (id) => {   
+      if (money === '' || Number(money) < 1) return;
+
+      setLogs(logs.map((item) => item.id === id ? { ...item, val: Number(money) } : item));
+      setMoney('');
   }
 
   return (  
-    <div className='card'>      
+    <div className='card'> 
       <MoneyInput   
         inputRef = {inputRef}
         moneyChange = {moneyChange}
         onKeyDown = {onKeyDown}
         money = {money}
+        category = {category}
+        categoryChange = {categoryChange}
         addLog = {addLog}
       />                
+
+      <div className="filter-group" style={{ marginBottom: '15px' }}>
+        {['전체', '식비', '교통비', '고정지출', '기타'].map(cat => (
+            <button
+              key={cat}
+              onClick={() => setFilter(cat)}
+              style={{
+                marginRight: '5px',
+                backgroundColor: filter === cat ? '#2ecc71' : '#eee',
+                color: filter === cat ? 'white' : '#333',
+                border: 'none',
+                padding: '5px 10px',
+                borderRadius: '4px',  
+                cursor: 'pointer'                                  
+              }}
+            >
+            {cat}
+            </button>
+        ))}
+      </div>
 
       <h1>로그 길이: {logs.length}</h1>
       <button onClick={setClearlocalStorage}>로컬스토리지 초기화</button>
       <div style={{ margin: '20px 0', padding: '10px', background: '#f4f4f4', borderRadius: '8px' }}>
-        <h1 style={{ color: '#2ecc71' }}>총 지출: {total.toLocaleString()}원</h1>
+        <h1 style={{ color: '#2ecc71' }}>총 지출: {filteredTotal.toLocaleString()}원</h1>
+      </div>
+
+      <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
+        {Object.entries(summary).map(([name, value]) => (
+          <div key={name} style={{ 
+            background: '#fff', 
+            padding: '15px', 
+            borderRadius: '8px', 
+            minWidth: '100px',
+            textAlign: 'center',
+            color: '#333' // 검은색 배경 대비 가독성
+          }}>
+            <div style={{ fontSize: '12px', color: '#888', marginBottom: '5px' }}>{name}</div>
+            <div style={{ fontSize: '16px', fontWeight: 'bold' }}>
+              {value.toLocaleString()}원
+            </div>
+          </div>
+        ))}
       </div>
 
       <LogList 
-        logs = {logs}
+        logs = {displayLogs}
         delLog = {delLog}
         updateLog = {updateLog}
       />  
