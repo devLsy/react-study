@@ -19,9 +19,6 @@ import './App.css';
     acc[cat] = (acc[cat] || 0) + Number(item.val);    
     return acc;
   }, {});
-
-  const getChartData = (summary) => 
-    Object.entries(summary).map(([name, value]) => ({ name, value }));
   
 function App() {
   const [money, setMoney] = useState('');
