@@ -1,4 +1,4 @@
-const MoneyInput = ({ inputRef, moneyChange, onKeyDown, money, addLog, category, categoryChange }) => (
+const MoneyInput = ({ inputRef, moneyChange, onKeyDown, money, addLog, category, categoryChange, CATEGORY_COLORS }) => (
   <div className="input-group"> 
     <select className="category-select" value={category} onChange={categoryChange}>
       <option value="식비">식비 🍕</option>
