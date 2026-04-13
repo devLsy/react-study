@@ -1,16 +1,14 @@
-# React + Vite
+# 💰 React Money Log
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+리액트 기초 실력 향상을 위한 개인 학습용 가계부 프로젝트입니다.
 
-Currently, two official plugins are available:
+## 📌 학습 목표
+* **React 기초 숙달**: Hook(`useState`, `useEffect`, `useRef`) 및 컴포넌트 구조 이해
+* **데이터 핸들링**: 자바스크립트 메서드(`filter`, `reduce`, `sort`)를 이용한 데이터 가공 실습
+* **목표 기한**: **2026년 8월**까지 학습 및 기능 구현 마무리 예정
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 🛠️ 주요 기능
+* **지출 기록**: 금액 입력 및 카테고리 분류 저장
+* **데이터 분석**: 카테고리별 실시간 필터링 및 지출 합계 요약
+* **리스트 정렬**: 금액이 큰 순서대로 내림차순 정렬 기능
+* **데이터 보존**: 브라우저 로컬 스토리지를 활용한 데이터 유지
