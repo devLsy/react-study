@@ -1,4 +1,4 @@
-const LogList = ({ logs, delLog, updateLog, CATEGORY_COLORS}) => (
+const LogList = ({ logs, delLog, updateLog, CATEGORY_COLORS, startEdit}) => (
     <ul className="log-list">
       {logs.map((item) => (
         <li key={item.id} className="log-item">  
@@ -11,8 +11,8 @@ const LogList = ({ logs, delLog, updateLog, CATEGORY_COLORS}) => (
           <span className="money">{Number(item.val).toLocaleString()}원</span> &nbsp;
                 
           <div className="btn-group">
-            <button onClick={() => updateLog(item.id)}>수정</button>
-            <button onClick={() => delLog(item.id)}>삭제</button>
+            <button className="btn-default" onClick={() => startEdit(item)}>수정</button> &nbsp;
+            <button className="btn-default" onClick={() => delLog(item.id)}>삭제</button>
           </div>
         </li> 
       ))}

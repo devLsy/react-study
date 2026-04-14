@@ -23,6 +23,7 @@ import './App.css';
 function App() {
   const [money, setMoney] = useState('');
   const [logs, setLogs] = useState([]);
+  const [editId, setEditId] = useState(null);
   // 1. 필터 상태: 어떤 카테고리를 보여줄지 결정 (기본값 '전체')
   const [filter, setFilter] = useState('전체'); 
   const [category, setCategory] = useState('식비');
@@ -85,15 +86,37 @@ function App() {
   }
 
   // 로그 삭제  
-  const delLog = (id) => setLogs(logs.filter(item => item.id !== id)); 
+  const delLog = (id) =>  {
+    if(!confirm('정말 삭제할꺼야?')) return;
+    setLogs(logs.filter(item => item.id !== id)); 
+  };
+
+  const startEdit = (log) => {
+    setMoney(log.val);
+    setCategory(log.category);
+    setEditId(log.id);
+    inputRef.current.focus();
+  }
+
+  const handleUpdate = () => {
+    if(editId) {
+      updateLog(editId);
+      setEditId(null);  
+    } else {
+      addLog();
+    }
+  }
 
   // 로그 수정
-    const updateLog = (id) => {   
-      if (money === '' || Number(money) < 1) return;
+  const updateLog = (id) => {   
+    if (money === '' || Number(money) < 1) return;
+    if(!confirm('정말 수정할꺼야?')) return;
 
-      setLogs(logs.map((item) => item.id === id ? { ...item, val: Number(money) } : item));
-      setMoney('');
-  }
+    setLogs(logs.map((item) => item.id === id ? 
+      { ...item, val: Number(money) } : item)
+    );
+    setMoney('');
+  } 
 
   return (  
     <div className='card'> 
@@ -105,7 +128,9 @@ function App() {
         category = {category}
         categoryChange = {categoryChange}
         addLog = {addLog}
-      />                
+        editId = {editId}
+        updateLog = {updateLog}
+      />                  
 
       <div className="filter-group" style={{ marginBottom: '15px' }}>
         {['전체', ...Object.keys(CATEGORY_COLORS)].map(cat => (
@@ -119,7 +144,7 @@ function App() {
                 border: 'none', 
                 padding: '5px 10px',
                 borderRadius: '4px',  
-                cursor: 'pointer'                                  
+                cursor: 'pointer'
               }}
             >
             {cat}
@@ -147,6 +172,7 @@ function App() {
         delLog = {delLog}
         updateLog = {updateLog}
         CATEGORY_COLORS = {CATEGORY_COLORS}
+        startEdit = {startEdit}
       />  
     </div>
   ) 
