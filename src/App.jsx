@@ -1,122 +1,24 @@
-import { useEffect, useState, useRef } from 'react';
+import { useMoneyLogs } from './hooks/userMoneyLogs';
 import MoneyInput from './component/MoneyInput';
 import LogList from './component/LogList';
 import Summary from './component/Summary';
 import Chart from './component/Chart';
 import './App.css'; 
 
-  // [1] 컴포넌트 밖: 상수 데이터 (OK)
   const CATEGORY_COLORS = {
     식비: '#ff7675',
     교통비: '#74b9ff',
     고정지출: '#55efc4',
     기타: '#ffeaa7'
   };
-
-  // [2] 컴포넌트 밖: 계산기 함수 (logs를 인자로 받아야 함)
-  const getSummary = (logs) => logs.reduce((acc, item) => {
-    const cat = item.category || '미분류';
-    acc[cat] = (acc[cat] || 0) + Number(item.val);    
-    return acc;
-  }, {});
   
 function App() {
-  const [money, setMoney] = useState('');
-  const [logs, setLogs] = useState([]);
-  const [editId, setEditId] = useState(null);
-  // 1. 필터 상태: 어떤 카테고리를 보여줄지 결정 (기본값 '전체')
-  const [filter, setFilter] = useState('전체'); 
-  const [category, setCategory] = useState('식비');
-  const inputRef = useRef(null);  
+  const { 
+    logs, money, setMoney, editId, filter, category, filteredTotal, displayLogs, summary, inputRef, addLog, delLog, setClearlocalStorage, onKeyDown, updateLog, startEdit 
+  } = useMoneyLogs();
 
-  // 2. 데이터 가공(Filtering): 원본 logs는 보존하고, 화면용 복사본(displayLogs)만 생성
-  // filter가 '전체'면 logs 전체, 아니면 해당 카테고리만 filter 메서드로 추출
-  const displayLogs = filter === '전체' ? logs : logs.filter(item => item.category === filter)
-    .sort((a,b) => Number(b.val) - Number(a.val));
-
-  const filteredTotal = displayLogs.reduce(( sum, item ) => sum + Number(item.val), 0);
-  
-  // 함수 밖으로 뺀 계산기를 여기서 사용 (logs를 전달)
-  const summary = getSummary(logs);
-
-  useEffect(() => {
-    const saved = localStorage.getItem('moneyLogs');
-    if(saved) {
-      setLogs(JSON.parse(saved));
-      console.log('초기 데이터 로딩 완료!');  
-    }    
-  }, []); 
-
-  useEffect(() => { 
-    localStorage.setItem('moneyLogs', JSON.stringify(logs));
-    console.log('데이터 동기화 완료!');
-  }, [logs]);
-
-  // 머니 체인지  
   const moneyChange = (e) => setMoney(e.target.value);  
-
-  // 카테고리 체인지
   const categoryChange = (e) => setCategory(e.target.value);
-
-  // 로그 추가
-  const addLog = () => {  
-    if (money === '' || Number(money) < 1) return;
-
-    const logObj = {
-      id: Date.now(),
-      val: Number(money),
-      category: category  
-    }
-
-    const newLogs = [logObj, ...logs];
-    setLogs(newLogs);
-    setMoney('');    
-
-    inputRef.current.focus();
-  }
-
-  const setClearlocalStorage = () => {
-    if(!confirm('정말 모든 기록을 삭제할꺼야?')) return;
-      setLogs([]);
-      localStorage.removeItem('moneyLogs');
-  } 
-  
-  const onKeyDown = (e) => {  
-    if(e.key === 'Enter') addLog();
-  }
-
-  // 로그 삭제  
-  const delLog = (id) =>  {
-    if(!confirm('정말 삭제할꺼야?')) return;
-    setLogs(logs.filter(item => item.id !== id)); 
-  };
-
-  const startEdit = (log) => {
-    setMoney(log.val);
-    setCategory(log.category);
-    setEditId(log.id);
-    inputRef.current.focus();
-  }
-
-  const handleUpdate = () => {
-    if(editId) {
-      updateLog(editId);
-      setEditId(null);  
-    } else {
-      addLog();
-    }
-  }
-
-  // 로그 수정
-  const updateLog = (id) => {   
-    if (money === '' || Number(money) < 1) return;
-    if(!confirm('정말 수정할꺼야?')) return;
-
-    setLogs(logs.map((item) => item.id === id ? 
-      { ...item, val: Number(money) } : item)
-    );
-    setMoney('');
-  } 
 
   return (  
     <div className='card'> 

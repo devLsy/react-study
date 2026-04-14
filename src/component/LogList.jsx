@@ -11,8 +11,8 @@ const LogList = ({ logs, delLog, updateLog, CATEGORY_COLORS, startEdit}) => (
           <span className="money">{Number(item.val).toLocaleString()}원</span> &nbsp;
                 
           <div className="btn-group">
-            <button className="btn-default" onClick={() => startEdit(item)}>수정</button> &nbsp;
-            <button className="btn-default" onClick={() => delLog(item.id)}>삭제</button>
+            <button className="btn-mod" onClick={() => startEdit(item)}>수정</button> &nbsp;
+            <button className="btn-del" onClick={() => delLog(item.id)}>삭제</button>
           </div>
         </li> 
       ))}
