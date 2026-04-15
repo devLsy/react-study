@@ -5,7 +5,7 @@ const Chart = ({ summary, CATEGORY_COLORS }) => {
     const data = Object.entries(summary).map(([name, value]) => ({ name, value }));
 
     return (
-        <div style={{ width: '100%', height: 300, background: '#fff', borderRadius: '8px', padding: '10px', marginBottom: '20px' }}>
+        <div>
         <ResponsiveContainer width="100%" height="100%">
             <PieChart>
             <Pie
@@ -18,7 +18,7 @@ const Chart = ({ summary, CATEGORY_COLORS }) => {
                 dataKey="value"
             >   
                 {data.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={CATEGORY_COLORS[entry.name] || '#eee'} />
+                <Cell key={`cell-${index}`} fill={CATEGORY_COLORS[entry.name]?.color || '#eee'} />
                 ))}
             </Pie>
             <Tooltip />
