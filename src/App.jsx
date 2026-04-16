@@ -7,7 +7,7 @@ import { CATEGORY_COLORS, CATEGORIES } from './constants/constants';
 
 function App() {
   const { 
-    logs, money, setMoney, setCategory, setFilter, editId, filter, category, filteredTotal, displayLogs, summary, inputRef, addLog, delLog, setClearlocalStorage, onKeyDown, updateLog, startEdit 
+    logs, money, setMoney, setCategory, setFilter, editId, filter, category, filteredTotal, displayLogs, summary, inputRef, addLog, delLog, setClearlocalStorage, onKeyDown, updateLog, handleUpdate, startEdit 
   } = useMoneyLogs();
 
   const moneyChange = (e) => setMoney(e.target.value);  
@@ -21,7 +21,7 @@ function App() {
           <h1 className="text-2xl font-black text-gray-800 flex items-center gap-2">
             <span className="text-green-500">💰</span> 가성비 가계부
           </h1>
-          <p className="text-sm text-gray-500 mt-1">9년 차 개발자의 소비 기록</p>
+          <p className="text-sm text-gray-500 mt-1">꼬비의 소비 기록</p>
         </header>
 
         {/* 여기에 컴포넌트들 나열 */}
@@ -31,26 +31,42 @@ function App() {
             moneyChange = {moneyChange}
             onKeyDown = {onKeyDown}
             money = {money} 
-            category = {category}
+            category = {category} 
             categoryChange = {categoryChange}
             addLog = {addLog}
             editId = {editId}
-            updateLog = {updateLog}
+            handleUpdate = {handleUpdate}
             CATEGORY_COLORS= {CATEGORY_COLORS}
             CATEGORIES = {CATEGORIES}
           />
             
           <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
             {['전체', ...CATEGORIES].map(cat => (
+              // <button 
+              //   key={cat}
+              //   onClick={() => setFilter(cat)}
+              //   className={`whitespace-nowrap px-4 py-2 rounded-full text-sm font-semibold transition-all ${
+              //     filter === cat 
+              //     ? 'bg-green-500 text-white shadow-md' 
+              //     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              //   }`}
+              // >
+              // App.jsx 버튼 부분
               <button 
                 key={cat}
                 onClick={() => setFilter(cat)}
+                style={{
+                  // 활성화 시에만 해당 카테고리의 고유 색상을 배경으로 꽂습니다.
+                  backgroundColor: filter === cat 
+                    // ? CATEGORY_COLORS[cat]?.color 
+                    ? (cat === '전체' ? '#22c55e' : CATEGORY_COLORS[cat]?.color)
+                    : '#F3F4F6',
+                  color: filter === cat ? 'white' : '#4B5563'
+                }}  
                 className={`whitespace-nowrap px-4 py-2 rounded-full text-sm font-semibold transition-all ${
-                  filter === cat 
-                  ? 'bg-green-500 text-white shadow-md' 
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  filter === cat ? 'shadow-md scale-105' : 'hover:bg-gray-200'
                 }`}
-              >
+              > 
                 {cat}
               </button>
             ))}
