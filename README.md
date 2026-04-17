@@ -7,7 +7,7 @@
 
 ## 📸 Dashboard
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/27db776f-3415-43cd-a5f9-f3e527777b0c" width="500" />
+  <img width="395" height="831" alt="Image" src="https://github.com/user-attachments/assets/88c69c18-fe14-461b-af6f-fe2788a48b30" />
 </p>
 
 ## 🚀 Key Features
