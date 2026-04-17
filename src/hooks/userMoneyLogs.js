@@ -46,16 +46,16 @@ export const useMoneyLogs = () => {
   // 로그 추가
   const addLog = async () => {  
     if(!category){  
-      alert('카테고리를 선택해야해!!!');
+      alert('카테고리를 선택해주세요.');
       return;
     } 
 
     if (money === '' || Number(money) < 1) {
-      alert('금액을 1원 이상 입력해야해!!!');
+      alert('금액을 1원 이상 입력해주세요.');
       return;
     }
 
-    if(!confirm('정말 추가할꺼야?')) return;
+    if(!confirm('추가하시겠습니까?')) return;
 
     const logObj = {
       val: Number(money),
@@ -83,7 +83,7 @@ export const useMoneyLogs = () => {
 
   // 로그 삭제  
   const delLog = async (id) =>  {
-    if(!confirm('정말 삭제할꺼야?')) return;
+    if(!confirm('이 작업은 돌이킬 수 없습니다.\n정말 삭제하시겠습니까?')) return;
     try {
         await deleteDoc(doc(db, "money-logs", id));
         setLogs(logs.filter(item => item.id !== id));
@@ -97,7 +97,7 @@ export const useMoneyLogs = () => {
     // 로그 수정  
   const updateLog = async (id) => {   
     if (money === '' || Number(money) < 1) return;
-    if(!confirm('정말 수정할꺼야?')) return;
+    if(!confirm('수정하시겠습니까?')) return;
 
     try {
       const logRef = doc(db, "money-logs", id);
