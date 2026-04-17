@@ -29,5 +29,6 @@
 - [x] Tailwind v4 마이그레이션 및 차트 UI 구현
 - [x] Firebase Hosting 배포 및 CI/CD 구축
 - [x] Firebase Firestore 연동 (Cloud DB 저장)
+- [ ] 무한스크롤
 - [ ] USDT 환율 API 연동
 - **기한**: 2026년 8월
