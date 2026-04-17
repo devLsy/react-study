@@ -1,5 +1,4 @@
-# Create the README.md content as a string
-readme_content = """# React Money Log
+# React Money Log
 개인 자산 흐름 파악 및 리액트 숙련도 향상을 위한 가계부 프로젝트입니다.
 
 ## 🔗 Live Demo
@@ -32,10 +31,3 @@ readme_content = """# React Money Log
 - [ ] Firebase Firestore 연동 (Cloud DB 저장)
 - [ ] USDT 환율 API 연동
 - **기한**: 2026년 8월
-"""
-
-# Write the content to a file
-with open("README.md", "w", encoding="utf-8") as f:
-    f.write(readme_content)
-
-print("README.md has been created successfully.")
