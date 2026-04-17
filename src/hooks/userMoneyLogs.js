@@ -1,4 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
+import { db } from "../firebase"; 
+import { 
+  collection, getDocs, query, orderBy, 
+  addDoc, deleteDoc, updateDoc, doc, serverTimestamp 
+} from "firebase/firestore";
 
 const getSummary = (logs) => logs.reduce((acc, item) => {
     const cat = item.category || '미분류';
@@ -14,63 +19,101 @@ export const useMoneyLogs = () => {
     const [category, setCategory] = useState('식비');
     const inputRef = useRef(null);  
 
+    // 초기 데이터 로드(Read)
     useEffect(() => {
-        const saved = localStorage.getItem('moneyLogs');
-        if(saved) {
-            setLogs(JSON.parse(saved));
-            console.log('초기 데이터 로딩 완료!');  
-        }    
+        const fetchLogs = async () => {
+          try {
+            const q = query(collection(db, "money-logs"), orderBy("createdAt", "desc"));
+            const querySnapshot = await getDocs(q);
+
+            const fetchedLogs = querySnapshot.docs.map(doc => ({
+              id: doc.id,
+              ...doc.data(),  
+              createdAt: doc.data().createdAt?.toDate() || new Date()
+            }));
+
+            setLogs(fetchedLogs);
+            console.log("팩트: 클라우드 데이터 로드 완료");
+          } catch (error) {
+            console.error("데이터 불러오기 실패:", error);
+            alert("데이터를 불러오는 데 실패했습니다.");
+          }
+        }
+        fetchLogs();
     }, []); 
 
-    useEffect(() => { 
-        localStorage.setItem('moneyLogs', JSON.stringify(logs));
-        console.log('데이터 동기화 완료!');
-  }, [logs]);
+     
+  // 로그 추가
+  const addLog = async () => {  
+    if (money === '' || Number(money) < 1) return;
 
+    const logObj = {
+      val: Number(money),
+      category: category, 
+      createdAt: serverTimestamp() 
+    }
+
+    try {
+      // firebase 'monry-logs' 컬렉션에 저장
+      const docRef = await addDoc(collection(db, "money-logs"), logObj);
+      const newLogs = [{ id: docRef.id, ...logObj, createdAt: new Date() }, ...logs];
+
+      setLogs(newLogs);
+      setMoney('');    
+      inputRef.current.focus(); 
+
+      console.log("클라우드 저장 완료. ID:", docRef.id);
+    } catch (error) {
+      console.error("클라우드 저장 실패:", error);
+      alert("데이터 저장에 실패했습니다.");
+    }
+  }  
+
+  // 로그 삭제  
+  const delLog = async (id) =>  {
+    if(!confirm('정말 삭제할꺼야?')) return;
+    try {
+        await deleteDoc(doc(db, "money-logs", id));
+        setLogs(logs.filter(item => item.id !== id));
+        console.log("클라우드 삭제 완료. ID:", id);
+    } catch (error) {
+      console.error("클라우드 삭제 실패:", error);
+      alert("데이터 삭제에 실패했습니다.");
+    }
+  };  
+
+    // 로그 수정  
+  const updateLog = async (id) => {   
+    if (money === '' || Number(money) < 1) return;
+    if(!confirm('정말 수정할꺼야?')) return;
+
+    try {
+      const logRef = doc(db, "money-logs", id);
+      await updateDoc(logRef, {
+        val: Number(money),
+        category: category,
+      });
+
+      setLogs(logs.map((item) => item.id === id ? 
+        { ...item, val: Number(money), category: category } : item)
+      );
+      setMoney('');
+      setEditId(null);
+      console.log("클라우드 수정 완료. ID:", id);
+    } catch (error) {
+      console.error("클라우드 수정 실패:", error);
+      alert("데이터 수정에 실패했습니다.");
+    }
+
+    setMoney('');
+    setEditId(null);
+  }
+  
   const displayLogs = filter === '전체' ? logs : logs.filter(item => item.category === filter)
     .sort((a,b) => Number(b.val) - Number(a.val));
 
   const filteredTotal = displayLogs.reduce(( sum, item ) => sum + Number(item.val), 0);
-  const summary = getSummary(logs);    
-  // 로그 추가
-  const addLog = () => {  
-    if (money === '' || Number(money) < 1) return;
-
-    const logObj = {
-      id: Date.now(),
-      val: Number(money),
-      category: category  
-    }
-
-    const newLogs = [logObj, ...logs];
-        setLogs(newLogs);
-        setMoney('');    
-        inputRef.current.focus();
-  }  
-
-  // 로그 삭제  
-  const delLog = (id) =>  {
-    if(!confirm('정말 삭제할꺼야?')) return;
-    setLogs(logs.filter(item => item.id !== id)); 
-  };  
-
-    // 로그 수정  
-  const updateLog = (id) => {   
-    if (money === '' || Number(money) < 1) return;
-    if(!confirm('정말 수정할꺼야?')) return;
-
-    setLogs(logs.map((item) => item.id === id ? 
-      { ...item, val: Number(money), category: category } : item)
-    );  
-    setMoney('');
-    setEditId(null);
-  } 
-    
-  const setClearlocalStorage = () => {
-    if(!confirm('정말 모든 기록을 삭제할꺼야?')) return;
-      setLogs([]);
-      localStorage.removeItem('moneyLogs');
-  }   
+  const summary = getSummary(logs); 
 
   const onKeyDown = (e) => { 
     if(e.key === 'Enter') {
@@ -88,7 +131,7 @@ export const useMoneyLogs = () => {
     setEditId(log.id);
     inputRef.current.focus();
   }
-
+  
   const handleUpdate = () => {
     if(editId) {
       updateLog(editId);
@@ -101,6 +144,6 @@ export const useMoneyLogs = () => {
   return {
         logs, money, setMoney, category, setCategory, editId, filter, setFilter, inputRef,
         displayLogs, filteredTotal, summary,
-        addLog, delLog, updateLog, startEdit, setClearlocalStorage, onKeyDown, handleUpdate
+        addLog, delLog, updateLog, startEdit, onKeyDown, handleUpdate
   };
 }
