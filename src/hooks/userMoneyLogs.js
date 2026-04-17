@@ -71,6 +71,7 @@ export const useMoneyLogs = () => {
       setLogs(newLogs);
       setCategory('');    
       setMoney(''); 
+      setFilter('전체');
       inputRef.current.focus(); 
 
       console.log("클라우드 저장 완료. ID:", docRef.id);
@@ -112,6 +113,8 @@ export const useMoneyLogs = () => {
       setCategory('');
       setMoney('');
       setEditId(null);
+      setFilter('전체');  
+
       console.log("클라우드 수정 완료. ID:", id);
     } catch (error) {
       console.error("클라우드 수정 실패:", error);

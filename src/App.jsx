@@ -70,9 +70,13 @@ function App() {
             <h2 className="text-3xl font-black text-green-700">{filteredTotal.toLocaleString()}원</h2>
           </div>
 
-          <Summary summary={summary} CATEGORY_COLORS={CATEGORY_COLORS} />
-          <Chart summary={getSummary(displayLogs)} displayLogs={displayLogs} CATEGORY_COLORS={CATEGORY_COLORS} />
-
+          {displayLogs.length > 0 && (  
+          <div className="space-y-6">
+            <Summary summary={summary} CATEGORY_COLORS={CATEGORY_COLORS} />
+            <Chart summary={getSummary(displayLogs)} displayLogs={displayLogs} CATEGORY_COLORS={CATEGORY_COLORS} />
+          </div>
+          )}
+          
           <LogList 
             logs = {displayLogs}
             delLog = {delLog}
