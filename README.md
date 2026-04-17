@@ -2,7 +2,7 @@
 개인 자산 흐름 파악 및 리액트 숙련도 향상을 위한 가계부 프로젝트입니다.
 
 ## 🔗 Live Demo
-* **배포 URL**: [https://money-log-85b1e.web.app/](https://money-log-85b1e.web.app/)
+* **배포 URL**: <a href="https://money-log-85b1e.web.app/" target="_blank" rel="noopener noreferrer">https://money-log-85b1e.web.app/</a>
 * **CI/CD**: GitHub Actions를 통한 Firebase Hosting 자동 배포 시스템 구축
 
 ## 📸 Dashboard
@@ -28,6 +28,6 @@
 - [x] CRUD 및 로컬 스토리지 연동
 - [x] Tailwind v4 마이그레이션 및 차트 UI 구현
 - [x] Firebase Hosting 배포 및 CI/CD 구축
-- [ ] Firebase Firestore 연동 (Cloud DB 저장)
+- [x] Firebase Firestore 연동 (Cloud DB 저장)
 - [ ] USDT 환율 API 연동
 - **기한**: 2026년 8월
