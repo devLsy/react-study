@@ -19,7 +19,7 @@ function App() {
       <div className="max-w-md mx-auto bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
         <header className="mb-8">
           <h1 className="text-2xl font-black text-gray-800 flex items-center gap-2">
-            <span className="text-green-500">💰</span> 가성비 가계부
+            <span className="text-green-500">💰</span> 가성비 가계부(푸시 테스트입니다.)
           </h1>
           <p className="text-sm text-gray-500 mt-1">꼬비의 소비 기록</p>
         </header>
