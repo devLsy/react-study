@@ -16,7 +16,7 @@ export const useMoneyLogs = () => {
     const [money, setMoney] = useState('');
     const [editId, setEditId] = useState(null);
     const [filter, setFilter] = useState('전체'); 
-    const [category, setCategory] = useState('식비');
+    const [category, setCategory] = useState('');
     const inputRef = useRef(null);  
 
     // 초기 데이터 로드(Read)
@@ -45,7 +45,17 @@ export const useMoneyLogs = () => {
      
   // 로그 추가
   const addLog = async () => {  
-    if (money === '' || Number(money) < 1) return;
+    if(!category){  
+      alert('카테고리를 선택해야해!!!');
+      return;
+    } 
+
+    if (money === '' || Number(money) < 1) {
+      alert('금액을 1원 이상 입력해야해!!!');
+      return;
+    }
+
+    if(!confirm('정말 추가할꺼야?')) return;
 
     const logObj = {
       val: Number(money),
@@ -59,7 +69,8 @@ export const useMoneyLogs = () => {
       const newLogs = [{ id: docRef.id, ...logObj, createdAt: new Date() }, ...logs];
 
       setLogs(newLogs);
-      setMoney('');    
+      setCategory('');    
+      setMoney(''); 
       inputRef.current.focus(); 
 
       console.log("클라우드 저장 완료. ID:", docRef.id);
@@ -97,6 +108,8 @@ export const useMoneyLogs = () => {
       setLogs(logs.map((item) => item.id === id ? 
         { ...item, val: Number(money), category: category } : item)
       );
+
+      setCategory('');
       setMoney('');
       setEditId(null);
       console.log("클라우드 수정 완료. ID:", id);
@@ -104,18 +117,20 @@ export const useMoneyLogs = () => {
       console.error("클라우드 수정 실패:", error);
       alert("데이터 수정에 실패했습니다.");
     }
-
-    setMoney('');
-    setEditId(null);
   }
   
-  const displayLogs = filter === '전체' ? logs : logs.filter(item => item.category === filter)
-    .sort((a,b) => Number(b.val) - Number(a.val));
+  const displayLogs = filter === '전체' 
+    ? logs : logs.filter(item => item.category === filter);
 
   const filteredTotal = displayLogs.reduce(( sum, item ) => sum + Number(item.val), 0);
   const summary = getSummary(logs); 
 
-  const onKeyDown = (e) => { 
+  const onKeyDown = (e) => {  
+    const forbiddenKeys = ['e', 'E', '+', '-'];
+    if (forbiddenKeys.includes(e.key)) {
+      e.preventDefault();
+    }
+
     if(e.key === 'Enter') {
       if (editId) {
         updateLog(editId);
@@ -131,7 +146,7 @@ export const useMoneyLogs = () => {
     setEditId(log.id);
     inputRef.current.focus();
   }
-  
+
   const handleUpdate = () => {
     if(editId) {
       updateLog(editId);
@@ -143,7 +158,7 @@ export const useMoneyLogs = () => {
 
   return {
         logs, money, setMoney, category, setCategory, editId, filter, setFilter, inputRef,
-        displayLogs, filteredTotal, summary,
+        displayLogs, filteredTotal, summary, getSummary,
         addLog, delLog, updateLog, startEdit, onKeyDown, handleUpdate
   };
 }

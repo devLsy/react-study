@@ -1,6 +1,6 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 
-const Chart = ({ summary, CATEGORY_COLORS }) => {
+const Chart = ({ summary, CATEGORY_COLORS, displayLogs }) => {
     // 차트 데이터
     const data = Object.entries(summary).map(([name, value]) => ({ name, value }));
 

@@ -10,15 +10,21 @@ const LogList = ({ logs, delLog, updateLog, CATEGORY_COLORS, startEdit}) => (
             </span> 
             <div>
               <p className="font-bold text-gray-800">{item.category}</p>
-              <p className="text-xs text-gray-400">{new Date(item.id).toLocaleTimeString()}</p>
+              <p className="text-xs text-gray-400">
+                {item.createdAt ? (
+                  `${item.createdAt.toLocaleDateString()} ${item.createdAt.toLocaleTimeString()}`
+                ) : (
+                  '날짜 정보 없음'
+                )}
+              </p>
             </div>
           </div>
           
           <div className="flex items-center gap-4">
             <span className="font-black text-gray-900">{Number(item.val).toLocaleString()}원</span>
             <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-              <button onClick={() => startEdit(item)} className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg">✏️</button>
-              <button onClick={() => delLog(item.id)} className="p-2 text-red-500 hover:bg-red-50 rounded-lg">🗑️</button>
+              <button onClick={() => startEdit(item)} className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg cursor-pointer">✏️</button>
+              <button onClick={() => delLog(item.id)} className="p-2 text-red-500 hover:bg-red-50 rounded-lg cursor-pointer">🗑️</button>
             </div>
           </div>
         </li>

@@ -7,10 +7,14 @@ import { CATEGORY_COLORS, CATEGORIES } from './constants/constants';
 
 function App() {
   const { 
-    logs, money, setMoney, setCategory, setFilter, editId, filter, category, filteredTotal, displayLogs, summary, inputRef, addLog, delLog, setClearlocalStorage, onKeyDown, updateLog, handleUpdate, startEdit 
+    logs, money, setMoney, setCategory, setFilter, editId, filter, category, filteredTotal, displayLogs, summary, getSummary, inputRef, addLog, delLog, setClearlocalStorage, onKeyDown, updateLog, handleUpdate, startEdit 
   } = useMoneyLogs();
 
-  const moneyChange = (e) => setMoney(e.target.value);  
+  const moneyChange = (e) => {
+    const value = e.target.value.replace(/[^0-9]/g, ''); // 숫자만 허용
+    setMoney(value);  
+  }   
+
   const categoryChange = (e) => setCategory(e.target.value);
 
 // App.jsx
@@ -38,32 +42,21 @@ function App() {
             handleUpdate = {handleUpdate}
             CATEGORY_COLORS= {CATEGORY_COLORS}
             CATEGORIES = {CATEGORIES}
+            setCategory = {setCategory}
           />
             
           <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
             {['전체', ...CATEGORIES].map(cat => (
-              // <button 
-              //   key={cat}
-              //   onClick={() => setFilter(cat)}
-              //   className={`whitespace-nowrap px-4 py-2 rounded-full text-sm font-semibold transition-all ${
-              //     filter === cat 
-              //     ? 'bg-green-500 text-white shadow-md' 
-              //     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              //   }`}
-              // >
-              // App.jsx 버튼 부분
               <button 
                 key={cat}
                 onClick={() => setFilter(cat)}
                 style={{
-                  // 활성화 시에만 해당 카테고리의 고유 색상을 배경으로 꽂습니다.
                   backgroundColor: filter === cat 
-                    // ? CATEGORY_COLORS[cat]?.color 
                     ? (cat === '전체' ? '#22c55e' : CATEGORY_COLORS[cat]?.color)
                     : '#F3F4F6',
                   color: filter === cat ? 'white' : '#4B5563'
                 }}  
-                className={`whitespace-nowrap px-4 py-2 rounded-full text-sm font-semibold transition-all ${
+                className={`whitespace-nowrap px-4 py-2 cursor-pointer rounded-full text-sm font-semibold transition-all ${
                   filter === cat ? 'shadow-md scale-105' : 'hover:bg-gray-200'
                 }`}
               > 
@@ -78,7 +71,8 @@ function App() {
           </div>
 
           <Summary summary={summary} CATEGORY_COLORS={CATEGORY_COLORS} />
-          <Chart summary={summary} CATEGORY_COLORS={CATEGORY_COLORS} />
+          <Chart summary={getSummary(displayLogs)} displayLogs={displayLogs} CATEGORY_COLORS={CATEGORY_COLORS} />
+
           <LogList 
             logs = {displayLogs}
             delLog = {delLog}
