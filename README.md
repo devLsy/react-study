@@ -3,6 +3,7 @@
 
 ## 🔗 Live Demo
 * **배포 URL**: <a href="https://money-log-85b1e.web.app/" target="_blank" rel="noopener noreferrer">https://money-log-85b1e.web.app/</a>
+> 💡 **Tip**: 마우스 휠 클릭이나 `Ctrl + 클릭`을 하시면 새 창에서 열립니다.
 * **CI/CD**: GitHub Actions를 통한 Firebase Hosting 자동 배포 시스템 구축
 
 ## 📸 Dashboard
