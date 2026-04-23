@@ -1,6 +1,14 @@
 const LogList = ({ logs, delLog, updateLog, CATEGORY_COLORS, startEdit}) => (
-<div className="mt-4">
-    <h3 className="text-sm font-bold text-gray-400 mb-3 ml-1 uppercase tracking-widest">Recent Logs</h3>
+  <div className="mt-4">
+    <div className="flex items-center justify-between mb-3 ml-1">
+      <h3 className="text-sm font-bold text-gray-400 uppercase tracking-widest">
+        Recent Logs
+      </h3>
+      <span className="bg-gray-100 text-gray-500 text-[10px] font-black px-2 py-0.5 rounded-full border border-gray-200">
+        TOTAL <span className="text-green-600 ml-0.5">{logs.length}</span>
+      </span>
+    </div>
+
     <ul className="space-y-3">
       {logs.map((item) => (
         <li key={item.id} className="group flex items-center justify-between p-4 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all">

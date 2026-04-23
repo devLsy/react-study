@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { db } from "../firebase"; 
 import { 
-  collection, getDocs, query, orderBy, 
+  collection, getDocs, query, orderBy, startAfter, limit,
   addDoc, deleteDoc, updateDoc, doc, serverTimestamp 
 } from "firebase/firestore";
 
@@ -13,35 +13,71 @@ const getSummary = (logs) => logs.reduce((acc, item) => {
 
 export const useMoneyLogs = () => {
     const [logs, setLogs] = useState([]);
+    const [lastVisible, setLastVisible] = useState(null); // 팩트: 마지막 문서 저장소
+    const [hasMore, setHasMore] = useState(true); // 팩트: 더 가져올 데이터가 있는지 여부
+    const [loading, setLoading] = useState(false);
     const [money, setMoney] = useState('');
     const [editId, setEditId] = useState(null);
     const [filter, setFilter] = useState('전체'); 
     const [category, setCategory] = useState('');
     const inputRef = useRef(null);  
 
-    // 초기 데이터 로드(Read)
-    useEffect(() => {
-        const fetchLogs = async () => {
-          try {
-            const q = query(collection(db, "money-logs"), orderBy("createdAt", "desc"));
-            const querySnapshot = await getDocs(q);
+    const PAGE_SIZE = 5; // 한 번에 가져올 개수
 
-            const fetchedLogs = querySnapshot.docs.map(doc => ({
-              id: doc.id,
-              ...doc.data(),  
-              createdAt: doc.data().createdAt?.toDate() || new Date()
-            }));
+    const fetchLogs = async (isFirst = false) => {  
+      if(loading || (!isFirst && !hasMore)) return; // 로딩 중이거나 추가 로드 불가 시 중단
+      setLoading(true);
 
-            setLogs(fetchedLogs);
-            console.log("팩트: 클라우드 데이터 로드 완료");
-          } catch (error) {
-            console.error("데이터 불러오기 실패:", error);
-            alert("데이터를 불러오는 데 실패했습니다.");
-          }
+      try {
+        let q = query(
+            collection(db, "money-logs"), 
+            orderBy("createdAt", "desc"),
+            limit(PAGE_SIZE)
+        );
+        // 첫 로드가 아니면 마지막 문서 이후부터 가져옴
+        if(!isFirst && lastVisible) {
+          q = query(q, startAfter(lastVisible)); // 마지막 문서 이후부터 시작
         }
-        fetchLogs();
-    }, []); 
 
+        const querySnapshot = await getDocs(q); 
+        const fetchedLogs = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),  
+          createdAt: doc.data().createdAt?.toDate() || new Date()
+        }));
+
+        // 마지막 문서 업데이트
+        const lastDoc = querySnapshot.docs[querySnapshot.docs.length - 1];
+        setLastVisible(lastDoc);
+
+        // 더 가져올 데이터 없는지 확인
+        if(querySnapshot.docs.length < PAGE_SIZE) { 
+          setHasMore(false);
+        }
+        // setLogs(prev => isFirst ? fetchedLogs : [...prev, ...fetchedLogs]);
+        setLogs(prev => {
+          const allLogs = isFirst ? fetchedLogs : [...prev, ...fetchedLogs];
+          // 팩트: ID를 기준으로 중복된 요소를 제거함
+          const uniqueLogs = allLogs.filter((item, index) =>  
+            allLogs.findIndex(target => target.id === item.id) === index
+          );  
+          return uniqueLogs;
+        });
+
+      } catch (error) {
+        console.error("페이지네이션 로드 실패", error);   
+        alert("데이터를 불러오는 데 실패했습니다.");
+      } finally {
+        setLoading(false);  
+      }
+    }
+
+    // 초기 데이터 로드(Read)
+    useEffect(() => { 
+      // 팩트: 브라우저가 DOM을 그리고 레이아웃을 계산할 시간을 줌
+      // const timer = setTimeout(() => setRenderChart(true), 100);
+      // return () => clearTimeout(timer);
+    }, []);
      
   // 로그 추가
   const addLog = async () => {  
@@ -162,6 +198,9 @@ export const useMoneyLogs = () => {
   return {
         logs, money, setMoney, category, setCategory, editId, filter, setFilter, inputRef,
         displayLogs, filteredTotal, summary, getSummary,
-        addLog, delLog, updateLog, startEdit, onKeyDown, handleUpdate
+        addLog, delLog, updateLog, startEdit, onKeyDown, handleUpdate,
+        fetchMore: () => fetchLogs(false),
+        hasMore, // 팩트: 더 가져올 게 있는지 상태 노출
+        loading  // 팩트: 로딩 상태 노출
   };
 }

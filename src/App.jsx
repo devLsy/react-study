@@ -5,11 +5,31 @@ import LogList from './component/LogList';
 import Summary from './component/Summary';
 import Chart from './component/Chart';
 import { CATEGORY_COLORS, CATEGORIES } from './constants/constants';
+import { useEffect, useRef } from 'react';
 
 function App() {
   const { 
-    logs, money, setMoney, setCategory, setFilter, editId, filter, category, filteredTotal, displayLogs, summary, getSummary, inputRef, addLog, delLog, setClearlocalStorage, onKeyDown, updateLog, handleUpdate, startEdit 
+    logs, money, setMoney, setCategory, setFilter, editId, filter, category, filteredTotal, 
+    displayLogs, summary, getSummary, inputRef, addLog, delLog, setClearlocalStorage, onKeyDown, 
+    updateLog, handleUpdate, startEdit, fetchMore, hasMore, loading 
   } = useMoneyLogs();
+
+  const observerRef = useRef();
+
+  // 팩트: 하단 감지 로직
+  useEffect(() => {
+    if (!observerRef.current || !hasMore) return;
+
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && !loading) {
+        console.log("팩트: 바닥 도달, 데이터 추가 로드");
+        fetchMore();
+      }
+    });
+
+    observer.observe(observerRef.current);
+    return () => observer.disconnect();
+  }, [hasMore, loading]);
 
   // 실시간 환율정보 가져오기
   const rate = useExchangeRate();
@@ -88,12 +108,26 @@ function App() {
             updateLog = {updateLog}
             CATEGORY_COLORS = {CATEGORY_COLORS}
             startEdit = {startEdit}
-          />
+          />  
+        {/* 무한 스크롤 타겟팅 요소 추가 */}  
+          <div 
+            ref={observerRef} 
+            className="h-10 flex justify-center items-center mt-4"
+          >
+            {loading && (
+              <p className="text-xs text-green-600 font-bold animate-pulse">
+                데이터 불러오는 중...
+              </p>
+            )}  
+            {!hasMore && logs.length > 0 && (
+              <p className="text-xs text-gray-400 font-medium">
+                마지막 기록입니다.
+              </p>
+            )}
+          </div>          
         </section>
-
-        <footer className="mt-8 pt-6 border-t border-gray-100 flex justify-between items-center">
-          <span className="text-xs text-gray-400 font-medium">로그: {logs.length}개</span>
-        </footer>
+            
+        <footer className="mt-8 pt-6 border-t border-gray-100 flex justify-between items-center"/>
       </div>
     </div>
   )
