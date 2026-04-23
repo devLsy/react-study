@@ -29,7 +29,7 @@
 - [x] Tailwind v4 마이그레이션 및 차트 UI 구현
 - [x] Firebase Hosting 배포 및 CI/CD 구축
 - [x] Firebase Firestore 연동 (Cloud DB 저장 완료) 🚀
-- [x] 실시간 환율 API 연동 (KRW ↔ USDT 변환 시스템) 👈 Next!
-- [ ] 무한 스크롤 (Infinite Scroll) UI 구현
+- [x] 실시간 환율 API 연동 (KRW ↔ USDT 변환 시스템)
+- [ ] 무한 스크롤 (Infinite Scroll) UI 구현  👈 Next!
 - [ ] V1 배포 및 안정화
 - **기한**: 2026년 8월
