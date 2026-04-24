@@ -3,6 +3,8 @@ import { useExchangeRate } from './hooks/useExchangeRate';
 import MoneyInput from './component/MoneyInput';
 import LogList from './component/LogList';
 import Summary from './component/Summary';
+import CategoryFilter from './component/CategoryFilter';
+import TotalSummary from './component/TotalSummary';
 import Chart from './component/Chart';
 import { CATEGORY_COLORS, CATEGORIES } from './constants/constants';
 import { useEffect, useRef } from 'react';
@@ -68,32 +70,18 @@ function App() {
             CATEGORIES = {CATEGORIES}
             setCategory = {setCategory}
           />
-            
-          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-            {['전체', ...CATEGORIES].map(cat => (
-              <button 
-                key={cat}
-                onClick={() => setFilter(cat)}
-                style={{
-                  backgroundColor: filter === cat 
-                    ? (cat === '전체' ? '#22c55e' : CATEGORY_COLORS[cat]?.color)
-                    : '#F3F4F6',
-                  color: filter === cat ? 'white' : '#4B5563'
-                }}  
-                className={`whitespace-nowrap px-4 py-2 cursor-pointer rounded-full text-sm font-semibold transition-all ${
-                  filter === cat ? 'shadow-md scale-105' : 'hover:bg-gray-200'
-                }`}
-              > 
-                {cat}
-              </button>
-            ))}
-          </div>
 
-          <div className="bg-green-50 rounded-xl p-4 border border-green-100">  
-            <p className="text-xs text-green-600 font-bold uppercase tracking-wider">Total Spending (Current Rate: ₩{rate || '로딩 중...'})</p>
-            <h2 className="text-3xl font-black text-green-700">{filteredTotal.toLocaleString()}원</h2>  
-            <span className="text-sm text-green-500 ml-2">(약 { rate ? (filteredTotal / rate).toFixed(2) : '0.00'} USD)</span> 
-          </div>
+          <CategoryFilter 
+            filter={filter} 
+            CATEGORIES={CATEGORIES} 
+            CATEGORY_COLORS = {CATEGORY_COLORS} 
+            setFilter={setFilter} 
+          />
+
+          <TotalSummary 
+            rate={rate} 
+            filteredTotal={filteredTotal}
+          />
 
           {displayLogs.length > 0 && (  
           <div className="space-y-6">
