@@ -9,8 +9,8 @@ const getSummary = (logs) => logs.reduce((acc, item) => {
     const cat = item.category || '미분류';
     acc[cat] = (acc[cat] || 0) + Number(item.val);    
     return acc;
-  }, {});
-
+  }, {}); 
+  
 export const useMoneyLogs = () => {
     const [logs, setLogs] = useState([]);
     const [lastVisible, setLastVisible] = useState(null); // 팩트: 마지막 문서 저장소
@@ -20,7 +20,8 @@ export const useMoneyLogs = () => {
     const [editId, setEditId] = useState(null);
     const [filter, setFilter] = useState('전체'); 
     const [category, setCategory] = useState('');
-    const inputRef = useRef(null);  
+    const inputRef = useRef(null);      // 금액 입력창용
+    const categoryRef = useRef(null);   // 카테고리 선택창용
 
     const PAGE_SIZE = 5; // 한 번에 가져올 개수
 
@@ -83,11 +84,13 @@ export const useMoneyLogs = () => {
   const addLog = async () => {  
     if(!category){  
       alert('카테고리를 선택해주세요.');
+      categoryRef.current?.focus();
       return;
     } 
 
     if (money === '' || Number(money) < 1) {
       alert('금액을 1원 이상 입력해주세요.');
+      inputRef.current?.focus();
       return;
     }
 
@@ -197,8 +200,8 @@ export const useMoneyLogs = () => {
 
   return {
         logs, money, setMoney, category, setCategory, editId, filter, setFilter, inputRef,
-        displayLogs, filteredTotal, summary, getSummary,
-        addLog, delLog, updateLog, startEdit, onKeyDown, handleUpdate,
+        categoryRef, displayLogs, filteredTotal, summary, getSummary, addLog, delLog, updateLog, 
+        startEdit, onKeyDown, handleUpdate,
         fetchMore: () => fetchLogs(false),
         hasMore, // 팩트: 더 가져올 게 있는지 상태 노출
         loading  // 팩트: 로딩 상태 노출
