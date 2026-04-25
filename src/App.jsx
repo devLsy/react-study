@@ -12,7 +12,7 @@ import { useEffect, useRef } from 'react';
 function App() {
   const { 
     logs, money, setMoney, setCategory, setFilter, editId, filter, category, filteredTotal, 
-    displayLogs, summary, getSummary, inputRef, addLog, delLog, setClearlocalStorage, onKeyDown, 
+    displayLogs, summary, getSummary, inputRef, categoryRef, addLog, delLog, setClearlocalStorage, onKeyDown, 
     updateLog, handleUpdate, startEdit, fetchMore, hasMore, loading 
   } = useMoneyLogs();
 
@@ -35,7 +35,7 @@ function App() {
 
   // 실시간 환율정보 가져오기
   const rate = useExchangeRate();
-  
+
   // 숫자만 허용
   const moneyChange = (e) => setMoney(e.target.value.replace(/[^0-9]/g, ''));  
   // 카테고리 변경
