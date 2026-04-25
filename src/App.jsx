@@ -35,12 +35,10 @@ function App() {
 
   // 실시간 환율정보 가져오기
   const rate = useExchangeRate();
-
-  const moneyChange = (e) => {
-    const value = e.target.value.replace(/[^0-9]/g, ''); // 숫자만 허용
-    setMoney(value);  
-  }   
-
+  
+  // 숫자만 허용
+  const moneyChange = (e) => setMoney(e.target.value.replace(/[^0-9]/g, ''));  
+  // 카테고리 변경
   const categoryChange = (e) => setCategory(e.target.value);
 
 // App.jsx
