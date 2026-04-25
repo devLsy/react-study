@@ -31,5 +31,5 @@
 - [x] Firebase Firestore 연동 (Cloud DB 저장 완료) 🚀
 - [x] 실시간 환율 API 연동 (KRW ↔ USDT 변환 시스템)
 - [x] 무한 스크롤 (Infinite Scroll) UI 구현  👈 Next!
-- [ ] V1 배포 및 안정화
+- [x] V1 배포 및 안정화
 - **기한**: 2026년 8월
