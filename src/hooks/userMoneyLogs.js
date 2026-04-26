@@ -47,7 +47,7 @@ export const useMoneyLogs = () => {
           createdAt: doc.data().createdAt?.toDate() || new Date()
         }));
 
-        // 마지막 문서 업데이트
+        // 마지막 문서 업데이트(마지막 데이터의 위치를 저장해둠)
         const lastDoc = querySnapshot.docs[querySnapshot.docs.length - 1];
         setLastVisible(lastDoc);
 
@@ -57,6 +57,7 @@ export const useMoneyLogs = () => {
         }
         // setLogs(prev => isFirst ? fetchedLogs : [...prev, ...fetchedLogs]);
         setLogs(prev => {
+          // 첫번 째이면 fetchedLogs 그대로, 아니면 기존 + 새로 가져온 로그 합침
           const allLogs = isFirst ? fetchedLogs : [...prev, ...fetchedLogs];
           // 팩트: ID를 기준으로 중복된 요소를 제거함
           const uniqueLogs = allLogs.filter((item, index) =>  
@@ -74,12 +75,10 @@ export const useMoneyLogs = () => {
     }
 
     // 초기 데이터 로드(Read)
-    useEffect(() => { 
-      // 팩트: 브라우저가 DOM을 그리고 레이아웃을 계산할 시간을 줌
-      // const timer = setTimeout(() => setRenderChart(true), 100);
-      // return () => clearTimeout(timer);
-    }, []);
+    useEffect(() => { }, []);
      
+  // 260428 아래부분부터 복기할 차례
+
   // 로그 추가
   const addLog = async () => {  
     if(!category){  
