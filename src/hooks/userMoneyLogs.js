@@ -76,8 +76,6 @@ export const useMoneyLogs = () => {
 
     // 초기 데이터 로드(Read)
     useEffect(() => { }, []);
-     
-  // 260428 아래부분부터 복기할 차례
 
   // 로그 추가
   const addLog = async () => {  
