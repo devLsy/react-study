@@ -8,7 +8,7 @@
 
 ## 📸 Dashboard
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/27db776f-3415-43cd-a5f9-f3e527777b0c" width="320" />
+  <img src="https://github.com/user-attachments/assets/f1e469a2-b233-4924-ad9f-d31f0d426022" width="320" />
 </p>
 
 ## 🚀 Key Features
